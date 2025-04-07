@@ -39,6 +39,12 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, help_text='Select a genre for this book')
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, help_text='Select a language for this book')
 
+    def display_author(self):
+        """Create a string for the Author(s)."""
+        return ', '.join(author.__str__() for author in self.author.all()[:3])
+
+    display_author.short_description = 'Author'
+
     def display_genre(self):
         """Create a string for the Genre. This is required to display genre in Admin."""
         return ', '.join(genre.name for genre in self.genre.all()[:3])

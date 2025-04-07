@@ -1,31 +1,31 @@
 from django.contrib import admin
-
-# Register your models here.
 from .models import Author, Genre, Book, BookInstance, Language
 
-admin.site.register(Book)
-admin.site.register(Author)
+# Register simple models
 admin.site.register(Genre)
-admin.site.register(BookInstance)
 admin.site.register(Language)
 
-
-# admin.site.register(Author)
-# Define the admin class
+# Author Admin
 class AuthorAdmin(admin.ModelAdmin):
-    pass
-
-# Register the admin class with the associated model
+    list_display = ('last_name', 'first_name', 'date_of_birth', 'date_of_death')
+    fieldsets = (
+        ('General Information', {'fields': ('first_name', 'last_name')}),
+        ('Dates', {'fields': (('date_of_birth', 'date_of_death'))}),
+    )
 admin.site.register(Author, AuthorAdmin)
 
-# admin.site.register(Book)
-# admin.site.register(BookInstance)
-
-# Register the Admin classes for Book using the decorator
+# Inline for BookInstance in Book admin
+class BooksInstanceInline(admin.StackedInline):
+    model = BookInstance
+    extra = 2
+# Book Admin
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    pass
-# Register the Admin classes for BookInstance using the decorator
+    list_display = ('title', 'display_author', 'display_genre')
+    inlines = [BooksInstanceInline]
+
+
+# BookInstance Admin
 @admin.register(BookInstance)
 class BookInstanceAdmin(admin.ModelAdmin):
     list_display = ('book', 'status', 'due_back')
